@@ -1,2 +1,2 @@
 /** profile module — public API. */
-export { profileRoutes } from './routes'
+export { choosePasswordRoute, profileRoutes } from './routes'

@@ -3,7 +3,7 @@
  */
 export { authRoutes } from './routes'
 export { setupAuth } from './setup'
-export { RequireAuth } from './components/RouteGuards'
+export { CHOOSE_PASSWORD_PATH, RequireAuth } from './components/RouteGuards'
 export { PasswordStrengthMeter } from './components/PasswordStrengthMeter'
 export { useAuthStore, useCurrentUser } from './store/authStore'
 export { authApi } from './services/auth.api'

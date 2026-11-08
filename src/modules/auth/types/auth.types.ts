@@ -7,6 +7,8 @@ export interface AuthUser {
   emailVerified: boolean
   timezone: string
   registeredAt: string
+  /** Logged in with a temporary password from the admin: must choose a new one first. */
+  mustChangePassword?: boolean
 }
 
 /** A logged-in device (session). */

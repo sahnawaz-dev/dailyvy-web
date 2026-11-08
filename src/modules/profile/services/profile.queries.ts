@@ -46,6 +46,8 @@ export function useChangePassword() {
   return useMutation({
     mutationFn: profileApi.changePassword,
     onSuccess: () => {
+      const { user, setUser } = useAuthStore.getState()
+      if (user?.mustChangePassword) setUser({ ...user, mustChangePassword: false })
       toast.success('Password changed. Other devices were logged out.')
       queryClient.invalidateQueries({ queryKey: profileKeys.devices })
     },

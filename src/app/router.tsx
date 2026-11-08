@@ -12,7 +12,7 @@ import { calendarRoutes } from '@/modules/calendar'
 import { focusRoutes } from '@/modules/focus'
 import { habitsRoutes } from '@/modules/habits'
 import { insightsRoutes } from '@/modules/insights'
-import { profileRoutes } from '@/modules/profile'
+import { choosePasswordRoute, profileRoutes } from '@/modules/profile'
 import { todosRoutes } from '@/modules/todos'
 import { PageLoader } from '@/shared/components'
 import { NotFoundPage } from './components/NotFoundPage'
@@ -22,6 +22,9 @@ import { AppLayout } from './layouts/AppLayout'
 export const router = createBrowserRouter([
   // Public (login, register, password reset, email verification)
   ...authRoutes.map((route) => ({ ...route, hydrateFallbackElement: <PageLoader /> })),
+
+  // Temporary password from the admin → choose your own first
+  { ...choosePasswordRoute, hydrateFallbackElement: <PageLoader /> },
 
   // Authenticated app
   {

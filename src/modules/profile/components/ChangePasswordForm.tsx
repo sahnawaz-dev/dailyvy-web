@@ -9,7 +9,18 @@ import { getErrorMessage } from '@/shared/api/apiError'
 import { PasswordStrengthMeter, isPasswordValid } from '@/modules/auth'
 import { useChangePassword } from '../services/profile.queries'
 
-export function ChangePasswordForm() {
+interface ChangePasswordFormProps {
+  /** e.g. "Temporary password (from the email)" */
+  currentLabel?: string
+  submitLabel?: string
+  onChanged?: () => void
+}
+
+export function ChangePasswordForm({
+  currentLabel = 'Current password',
+  submitLabel = 'Change password',
+  onChanged,
+}: ChangePasswordFormProps = {}) {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -28,6 +39,7 @@ export function ChangePasswordForm() {
           setCurrentPassword('')
           setNewPassword('')
           setConfirm('')
+          onChanged?.()
         },
       },
     )
@@ -43,7 +55,7 @@ export function ChangePasswordForm() {
           </Alert>
         )}
         <Field>
-          <FieldLabel htmlFor="current-password">Current password</FieldLabel>
+          <FieldLabel htmlFor="current-password">{currentLabel}</FieldLabel>
           <PasswordInput
             id="current-password"
             autoComplete="current-password"
@@ -75,7 +87,7 @@ export function ChangePasswordForm() {
         <Field orientation="horizontal" className="justify-end">
           <Button type="submit" disabled={!canSubmit || change.isPending}>
             {change.isPending && <Spinner />}
-            Change password
+            {submitLabel}
           </Button>
         </Field>
       </FieldGroup>
