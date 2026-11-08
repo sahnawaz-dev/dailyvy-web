@@ -10,15 +10,19 @@
  *    token to the API (which this worker learns from its ?api= URL)
  */
 const API = new URL(self.location.href).searchParams.get('api')
+/** Where the site lives: "/" locally, "/dailyvy-web/" on GitHub Pages (this file sits there). */
+const BASE = new URL('./', self.location.href).pathname
+/** A page of the app ("/today") at the site's real address. */
+const page = (path) => new URL(BASE + path.replace(/^\//, ''), self.location.origin).href
 
 const CACHE = 'dailyvy-shell-v1'
-const OFFLINE_URL = '/offline.html'
+const OFFLINE_URL = BASE + 'offline.html'
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE)
-      .then((cache) => cache.addAll([OFFLINE_URL, '/icons/icon-192.png', '/favicon.ico']))
+      .then((cache) => cache.addAll([OFFLINE_URL, BASE + 'icons/icon-192.png', BASE + 'favicon.ico']))
       .then(() => self.skipWaiting()),
   )
 })
@@ -57,8 +61,8 @@ self.addEventListener('push', (event) => {
       body,
       tag, // same tag replaces an older notification instead of stacking
       silent,
-      icon: '/icons/icon-192.png',
-      badge: '/icons/favicon-32.png',
+      icon: BASE + 'icons/icon-192.png',
+      badge: BASE + 'icons/favicon-32.png',
       data: { url, actionToken },
       actions: withActions
         ? [
@@ -88,7 +92,7 @@ self.addEventListener('notificationclick', (event) => {
     return
   }
 
-  const url = new URL(event.notification.data?.url ?? '/today', self.location.origin).href
+  const url = page(event.notification.data?.url ?? '/today')
 
   event.waitUntil(
     (async () => {

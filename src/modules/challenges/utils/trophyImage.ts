@@ -4,6 +4,7 @@
  */
 import { formatDisplay } from '@/shared/utils/date'
 import type { ChallengeBase } from '../types/challenges.types'
+import { publicUrl } from '@/shared/lib/publicUrl'
 
 const SIZE = 1080
 const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
@@ -105,7 +106,7 @@ export async function drawTrophyImage(challenge: ChallengeBase): Promise<Blob> {
   }
 
   // Brand
-  const logo = await loadImage('/icons/icon-192.png')
+  const logo = await loadImage(publicUrl('icons/icon-192.png'))
   ctx.font = `700 38px ${FONT}`
   ctx.fillStyle = '#ffffff'
   const brand = 'Dailyvy'

@@ -10,7 +10,10 @@ test.describe('around the app', () => {
     await dialog.getByRole('button', { name: 'Add to my day' }).click()
     await expect(dialog).toBeHidden()
 
-    await page.getByRole('checkbox', { name: 'Call the bank' }).check()
+    // The tick shows once the server has saved it, so click and wait instead of check()
+    const task = page.getByRole('checkbox', { name: 'Call the bank' })
+    await task.click()
+    await expect(task).toBeChecked()
     await expect(page.getByText('1/1 done')).toBeVisible()
   })
 

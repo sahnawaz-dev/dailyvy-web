@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/components/ui/card'
+import { publicUrl } from '@/shared/lib/publicUrl'
 
 interface AuthCardProps {
   title: string
@@ -14,7 +15,7 @@ export function AuthCard({ title, subtitle, children, footer }: AuthCardProps) {
     <main className="grid min-h-svh place-items-center bg-muted/40 p-4 [&_a]:font-medium [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <div className="flex items-center gap-2 self-center font-heading font-semibold">
-          <img src="/icons/icon-192.png" alt="" width={36} height={36} className="size-9" />
+          <img src={publicUrl('icons/icon-192.png')} alt="" width={36} height={36} className="size-9" />
           <span className="text-lg">Dailyvy</span>
         </div>
         <Card>

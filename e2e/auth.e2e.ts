@@ -47,7 +47,7 @@ test.describe('request access, verify, log in', () => {
     const code = await verificationCode(page.request, email)
     await page.request.post(`${API}/auth/verify-email`, { data: { email, code } })
     await page.goto('/today')
-    await page.getByRole('button', { name: 'Log out' }).click()
+    await page.getByRole('button', { name: 'Log out', exact: true }).first().click()
     await expect(page).toHaveURL(/\/login$/)
 
     await page.getByLabel('Email').fill(email)

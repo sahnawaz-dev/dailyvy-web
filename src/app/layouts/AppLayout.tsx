@@ -30,6 +30,7 @@ import { ConnectionBanner } from '../components/ConnectionBanner'
 import { SidebarMiniCalendar } from '@/modules/calendar'
 import { NAV_ITEMS } from '../navigation'
 import { useAppUiStore } from '../store/appUiStore'
+import { publicUrl, uploadUrl } from '@/shared/lib/publicUrl'
 
 function initials(name: string) {
   return name
@@ -71,7 +72,7 @@ export function AppLayout() {
             >
               {/* Collapsed: hidden while the toggle shows in its place (hover / keyboard focus) */}
               <img
-                src="/icons/icon-192.png"
+                src={publicUrl('icons/icon-192.png')}
                 alt=""
                 width={32}
                 height={32}
@@ -128,7 +129,7 @@ export function AppLayout() {
               <SidebarMenuButton size="lg" asChild isActive={pathname.startsWith('/profile')} tooltip="Account">
                 <NavLink to="/profile">
                   <Avatar className="size-8">
-                    {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+                    {user.avatarUrl && <AvatarImage src={uploadUrl(user.avatarUrl)} alt="" />}
                     <AvatarFallback>{initials(user.name)}</AvatarFallback>
                   </Avatar>
                   <span className="truncate font-medium">{user.name}</span>
@@ -150,7 +151,7 @@ export function AppLayout() {
         {/* Mobile only: the sidebar is an off-canvas sheet there, so it needs an opener. */}
         <header className="flex h-12 shrink-0 items-center gap-2 border-b px-3 md:hidden">
           <SidebarTrigger aria-label="Open menu" />
-          <img src="/icons/icon-192.png" alt="" width={24} height={24} className="size-6" />
+          <img src={publicUrl('icons/icon-192.png')} alt="" width={24} height={24} className="size-6" />
           <span className="flex-1 font-heading font-semibold">Dailyvy</span>
           <MissedBellButton />
         </header>

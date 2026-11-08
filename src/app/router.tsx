@@ -46,4 +46,7 @@ export const router = createBrowserRouter([
   },
 
   { path: '*', element: <NotFoundPage /> },
-])
+], {
+  // GitHub Pages serves the site from /dailyvy-web/ (VITE_BASE)
+  basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/',
+})

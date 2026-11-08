@@ -8,6 +8,7 @@
  * Lives in shared/ so the auth module can turn it off on logout.
  */
 import { API_BASE_URL, api } from '@/shared/api/httpClient'
+import { publicUrl } from '@/shared/lib/publicUrl'
 
 export type PushState =
   /** This browser can't do Web Push (or the page isn't https / localhost). */
@@ -19,7 +20,7 @@ export type PushState =
   | 'off'
   | 'on'
 
-const SW_URL = '/sw.js'
+const SW_URL = publicUrl('sw.js')
 
 export function isPushSupported() {
   return (

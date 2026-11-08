@@ -41,7 +41,8 @@ export async function signUpAndLogIn(page: Page, { name = 'Alex Tester', path = 
   expect(verified.status(), await verified.text()).toBe(200)
 
   await page.goto(path)
-  await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible()
+  // Exact: the Security page also has "Log out other devices" / "… of all devices"
+  await expect(page.getByRole('button', { name: 'Log out', exact: true }).first()).toBeVisible()
   return { email, name }
 }
 

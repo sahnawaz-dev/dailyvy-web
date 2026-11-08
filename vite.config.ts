@@ -12,6 +12,8 @@ export default defineConfig(({ mode }) => {
   const apiTarget = env.VITE_API_PROXY_TARGET || 'http://localhost:4000'
 
   return {
+    // GitHub Pages serves the site from /<repo>/ — the deploy workflow sets VITE_BASE=/dailyvy-web/
+    base: env.VITE_BASE || '/',
     plugins: [react(), babel({ presets: [reactCompilerPreset()] }), tailwindcss()],
     resolve: {
       alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },

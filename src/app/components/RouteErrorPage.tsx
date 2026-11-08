@@ -6,6 +6,7 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router'
 import { Home, RefreshCw } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
+import { publicUrl } from '@/shared/lib/publicUrl'
 
 export function RouteErrorPage() {
   const error = useRouteError()
@@ -18,7 +19,7 @@ export function RouteErrorPage() {
   return (
     <main className="grid min-h-svh place-items-center bg-background p-6 text-center">
       <div className="flex max-w-sm flex-col items-center gap-4">
-        <img src="/icons/icon-192.png" alt="" width={64} height={64} className="size-16" />
+        <img src={publicUrl('icons/icon-192.png')} alt="" width={64} height={64} className="size-16" />
         <div className="flex flex-col gap-1.5">
           <h1 className="font-heading text-xl font-semibold">Something went wrong</h1>
           <p className="text-sm text-muted-foreground">
@@ -30,7 +31,7 @@ export function RouteErrorPage() {
             <RefreshCw />
             Reload
           </Button>
-          <Button variant="outline" onClick={() => window.location.assign('/today')}>
+          <Button variant="outline" onClick={() => window.location.assign(publicUrl('today'))}>
             <Home />
             Go to Today
           </Button>

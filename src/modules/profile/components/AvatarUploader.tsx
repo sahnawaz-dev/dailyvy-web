@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/ui/avatar'
+import { uploadUrl } from '@/shared/lib/publicUrl'
 import { Button } from '@/shared/components/ui/button'
 import { Spinner } from '@/shared/components/ui/spinner'
 import { useCurrentUser } from '@/modules/auth'
@@ -33,7 +34,7 @@ export function AvatarUploader() {
   return (
     <div className="flex items-center gap-4">
       <Avatar className="size-16">
-        {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+        {user.avatarUrl && <AvatarImage src={uploadUrl(user.avatarUrl)} alt="" />}
         <AvatarFallback className="text-lg">{initials(user.name)}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col items-start gap-1">

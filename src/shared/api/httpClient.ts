@@ -16,8 +16,6 @@ import { toAppError } from './apiError'
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
 
-console.log('API_BASE_URL', API_BASE_URL)
-
 export interface AuthBridge {
   getAccessToken: () => string | null
   /** Returns a fresh access token, or null if the session is gone. */
