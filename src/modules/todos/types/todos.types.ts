@@ -40,12 +40,16 @@ export interface MissedItem extends MissedItemRef {
   tabId?: string
   tabName?: string | null
   color?: string | null
+  /** A habit of yesterday that can still be marked done, until this time ('12:00'). */
+  markableUntil?: TimeString | null
 }
 
 /** Response of GET /todos/missed (newest first). */
 export interface MissedList {
   items: MissedItem[]
   windowDays: number
+  /** Yesterday's habits stay markable until this time the next day. */
+  lateMarkUntil?: TimeString
 }
 
 /** A missed item the user already handled ("Add to task" / dismiss). */

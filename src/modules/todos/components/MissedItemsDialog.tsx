@@ -2,11 +2,14 @@
  * "Missed items" — unfinished tasks and habits from the last 7 days.
  * Opens automatically at most once a day (first load of the day) when there is
  * something to show; the bell (MissedBell) reopens it any time.
- * Each item: "Add to task" (adds it to today) or dismiss. The History tab lists
- * what was already handled (last 7 days).
+ * Each item: "Add to task" (adds it to today) or dismiss — and yesterday's
+ * habits, until 12:00: "Mark done" (forgot to check it off last night). The
+ * History tab lists what was already handled (last 7 days).
+ * `?missed=1` in the address (the morning notification) opens it.
  */
 import { useEffect, useState } from 'react'
-import { BellRing, CheckCheck, Clock, ListTodo, Plus, X } from 'lucide-react'
+import { useSearchParams } from 'react-router'
+import { BellRing, Check, CheckCheck, Clock, ListTodo, Plus, X } from 'lucide-react'
 import { Badge } from '@/shared/components/ui/badge'
 import { Button } from '@/shared/components/ui/button'
 import {
@@ -30,7 +33,12 @@ import {
 } from '@/shared/components/ui/item'
 import { addDays, formatDisplay, todayInTimezone } from '@/shared/utils/date'
 import { useCurrentUser } from '@/modules/auth'
-import { useAddMissedToToday, useDismissMissed, useMissedItems } from '../services/todos.queries'
+import {
+  useAddMissedToToday,
+  useDismissMissed,
+  useMarkMissedHabitDone,
+  useMissedItems,
+} from '../services/todos.queries'
 import { useMissedUiStore } from '../store/missedUiStore'
 import type { MissedItem } from '../types/todos.types'
 import { formatTime } from '../utils/time'
@@ -54,6 +62,19 @@ function useAutoOpenOncePerDay(userId: string, today: string, count: number | un
   }, [userId, today, count, setOpen])
 }
 
+/** The morning notification links to ?missed=1: open the dialog, then tidy the address. */
+function useOpenFromAddress() {
+  const [params, setParams] = useSearchParams()
+  const setOpen = useMissedUiStore((state) => state.setOpen)
+  useEffect(() => {
+    if (params.get('missed') !== '1') return
+    setOpen(true)
+    const next = new URLSearchParams(params)
+    next.delete('missed')
+    setParams(next, { replace: true })
+  }, [params, setParams, setOpen])
+}
+
 function groupByDate(items: MissedItem[]) {
   const groups = new Map<string, MissedItem[]>()
   for (const item of items) groups.set(item.date, [...(groups.get(item.date) ?? []), item])
@@ -67,13 +88,16 @@ export function MissedItemsDialog() {
   const missed = useMissedItems()
   const addToToday = useAddMissedToToday()
   const dismiss = useDismissMissed()
+  const markDone = useMarkMissedHabitDone()
   const [view, setView] = useState<'review' | 'history'>('review')
+  useOpenFromAddress()
 
   const items = missed.data?.items ?? []
   const today = todayInTimezone(user.timezone)
   useAutoOpenOncePerDay(user.id, today, missed.data?.items.length)
 
   const yesterday = addDays(today, -1)
+  const markable = items.filter((item) => item.markableUntil)
   const dayLabel = (date: string) =>
     date === yesterday ? 'Yesterday' : formatDisplay(date, { weekday: 'long', day: 'numeric', month: 'short' })
 
@@ -86,7 +110,7 @@ export function MissedItemsDialog() {
             Missed items
           </DialogTitle>
           <DialogDescription>
-            These tasks you missed to complete in the last {missed.data?.windowDays ?? 7} days. Add any of them to
+            Tasks and habits you didn't finish in the last {missed.data?.windowDays ?? 7} days. Add any of them to
             today.
           </DialogDescription>
         </DialogHeader>
@@ -97,6 +121,14 @@ export function MissedItemsDialog() {
             <TabsTrigger value="history">History</TabsTrigger>
           </TabsList>
         </Tabs>
+
+        {view === 'review' && markable.length > 0 && (
+          <p className="rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-sm">
+            Did yesterday's {markable.length === 1 ? 'habit' : 'habits'} but forgot to check{' '}
+            {markable.length === 1 ? 'it' : 'them'} off? Mark {markable.length === 1 ? 'it' : 'them'} done until{' '}
+            <strong>{formatTime(markable[0].markableUntil!)}</strong> today to keep your streak.
+          </p>
+        )}
 
         {view === 'history' ? (
           <MissedHistoryList />
@@ -144,10 +176,17 @@ export function MissedItemsDialog() {
                           </ItemDescription>
                         </ItemContent>
                         <ItemActions>
-                          <Button size="sm" variant="outline" onClick={() => addToToday.mutate(ref)}>
-                            <Plus />
-                            Add to task
-                          </Button>
+                          {item.markableUntil ? (
+                            <Button size="sm" onClick={() => markDone.mutate(ref)} disabled={markDone.isPending}>
+                              <Check />
+                              Mark done
+                            </Button>
+                          ) : (
+                            <Button size="sm" variant="outline" onClick={() => addToToday.mutate(ref)}>
+                              <Plus />
+                              Add to task
+                            </Button>
+                          )}
                           <Button
                             size="icon-sm"
                             variant="ghost"

@@ -15,6 +15,9 @@ export const todosApi = {
   /** Items already handled (added / dismissed), last 7 days. */
   listMissedHistory: () => api.get<MissedHistory>('/todos/missed/history'),
   addMissed: (item: MissedItemRef) => api.post<Todo>('/todos/missed/add', item),
+  /** Late mark: a habit of yesterday checked off (the habits API; allowed until 12:00). */
+  markMissedHabitDone: (item: MissedItemRef) =>
+    api.put<{ habitId: string; date: string }>(`/logs/${item.refId}/${item.date}`, { status: 'done' }),
   dismissMissed: (items: MissedItemRef[]) =>
     api.post<{ dismissed: number }>('/todos/missed/dismiss', { items }),
 }

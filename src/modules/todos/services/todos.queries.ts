@@ -131,6 +131,25 @@ export function useAddMissedToToday() {
   })
 }
 
+/** "Mark done" on a habit of yesterday (before 12:00): the streak is kept. */
+export function useMarkMissedHabitDone() {
+  const queryClient = useQueryClient()
+  const removeFromList = useOptimisticMissedRemoval()
+  return useMutation({
+    mutationFn: (item: MissedItemRef) => todosApi.markMissedHabitDone(item),
+    onMutate: (item) => removeFromList([item]),
+    onSuccess: () => {
+      toast.success('Marked done — your streak is safe 🔥')
+      // Habits, streaks, stats and the calendar all change
+      return queryClient.invalidateQueries()
+    },
+    onError: (err, _item, context) => {
+      queryClient.setQueryData(todoKeys.missed, context?.previous)
+      toast.error(getErrorMessage(err))
+    },
+  })
+}
+
 export function useDismissMissed() {
   const queryClient = useQueryClient()
   const removeFromList = useOptimisticMissedRemoval()
